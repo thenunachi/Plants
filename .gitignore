@@ -1,0 +1,15 @@
+node_modules
+# Ignore the SQLite database
+backend/plants.db
+
+# Ignore Python cache
+__pycache__/
+*.py[cod]
+
+# Vite build output
+dist/
+.vite/
+
+# Local env files
+.env
+.env.local
