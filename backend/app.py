@@ -3,6 +3,7 @@ from flask_cors import CORS
 from config import Config
 from models import db
 from routes.plants import plants_bp
+from routes.ai import ai_bp
 
 def create_app():
     app = Flask(__name__)
@@ -10,6 +11,7 @@ def create_app():
     db.init_app(app)
     CORS(app)
     app.register_blueprint(plants_bp, url_prefix='/api')
+    app.register_blueprint(ai_bp, url_prefix='/api')
     return app
 
 if __name__ == '__main__':

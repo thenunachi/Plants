@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
+import PlantingAdvisor from '../components/PlantingAdvisor'
+import { useGardenContext } from '../context/GardenContext'
+import { AddModal } from './MyGarden'
 
 const regionEmojis = {
   'Tropical': '🌴',
@@ -369,6 +372,8 @@ export default function PlantDetail() {
   const [plant, setPlant] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const { addPlant, isInGarden } = useGardenContext()
 
   useEffect(() => {
     async function fetchPlant() {
@@ -426,6 +431,12 @@ export default function PlantDetail() {
             )}
           </div>
           <p className="detail-description">{plant.description}</p>
+          <button
+            className={`garden-add-btn ${isInGarden(plant.id) ? 'garden-add-btn-active' : ''}`}
+            onClick={() => !isInGarden(plant.id) && setShowAddModal(true)}
+          >
+            {isInGarden(plant.id) ? '✓ In My Garden' : '🪴 Add to My Garden'}
+          </button>
         </div>
       </div>
 
@@ -473,6 +484,9 @@ export default function PlantDetail() {
 
       {/* Temperature Bar */}
       <TemperatureBar tempMin={plant.temp_min} tempMax={plant.temp_max} tempOptimal={plant.temp_optimal} />
+
+      {/* Live Planting Advisor */}
+      <PlantingAdvisor plant={plant} />
 
       {/* 1. Planting Calendar */}
       {plant.calendar && (
@@ -524,6 +538,14 @@ export default function PlantDetail() {
           ))}
         </div>
       </div>
+
+      {showAddModal && (
+        <AddModal
+          plant={plant}
+          onAdd={(stage, notes) => addPlant(plant, stage, notes)}
+          onClose={() => setShowAddModal(false)}
+        />
+      )}
     </div>
   )
 }
