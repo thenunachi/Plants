@@ -1,4 +1,4 @@
-# 🌱 PlantWise — Grow the Right Plant, in the Right Place
+# 🌱 Plan-t Ahead — Grow the Right Plant, in the Right Place
 
 A full-stack informational web app for gardeners and growers. Discover which plants thrive in your climate, get live weather-based planting advice, explore an interactive world map by region, and ask an AI about any plant you have in mind.
 
