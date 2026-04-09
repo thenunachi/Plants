@@ -122,8 +122,11 @@ export default function PlantAISearch({ onPlantAdded }) {
         onPlantAdded(res.data.plant)
       }
     } catch (err) {
-      const msg = err.response?.data?.error || 'Something went wrong. Please try again.'
-      setError(msg)
+      if (err.response?.status === 404 && err.response?.data?.not_found) {
+        setError(err.response.data.message)
+      } else {
+        setError(err.response?.data?.error || 'Something went wrong. Please try again.')
+      }
     } finally {
       setLoading(false)
     }

@@ -7,7 +7,12 @@ from models.plant import Plant, Region
 ai_bp = Blueprint('ai', __name__)
 
 SYSTEM_PROMPT = """You are a botanical expert and gardening database assistant.
-When given a plant name, respond with ONLY a valid JSON object — no markdown, no explanation, no extra text.
+When given a plant name, first determine if it is a real, recognised plant or flower.
+
+If it is NOT a real plant (e.g. gibberish, a food dish, a person's name, a random word), respond with ONLY this JSON and nothing else:
+{"not_found": true, "message": "\"<input>\" is not a recognised plant. Please check the spelling or try a different plant name."}
+
+If it IS a real plant, respond with ONLY a valid JSON object — no markdown, no explanation, no extra text.
 The JSON must exactly match this schema:
 
 {
@@ -159,6 +164,10 @@ def ask_plant():
         plant_data = json.loads(raw)
     except json.JSONDecodeError as e:
         return jsonify({'error': f'Could not parse AI response as JSON: {str(e)}', 'raw': raw}), 502
+
+    # Not a real plant — return message without saving
+    if plant_data.get('not_found'):
+        return jsonify({'not_found': True, 'message': plant_data.get('message', f'"{plant_name}" is not a recognised plant. Please check the spelling or try a different plant name.')}), 404
 
     # Build region lookup map
     all_regions = Region.query.all()
